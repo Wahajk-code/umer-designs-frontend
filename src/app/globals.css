@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f6f3;
+  --foreground: #2b2c2c;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins);
+
+  /* Ink scale — primary brand near-black, buttons, active states, headings */
+  --color-ink-950: #1a1a1a; /* admin chrome */
+  --color-ink-900: #2b2c2c; /* primary */
+  --color-ink-700: #444646; /* secondary text / links */
+  --color-ink-500: #8a8d8f; /* muted text */
+
+  /* Warm neutral scale — backgrounds, cards, borders */
+  --color-warm-50: #f7f6f3; /* page background */
+  --color-warm-100: #f6f5f2;
+  --color-warm-150: #f1efe9;
+  --color-warm-200: #eceae5;
+  --color-warm-300: #e7e5e0; /* subtle border */
+  --color-warm-400: #e2e0db; /* border */
+  --color-warm-500: #dcd9d3; /* stronger border / dashed */
+
+  /* Photo/render placeholder stripe pair */
+  --color-placeholder-a: #e9e6e0;
+  --color-placeholder-b: #e1ded7;
+
+  /* Dark surface scale — used inside ink-900 cards (e.g. tracking widget) */
+  --color-dark-800: #3a3b3b;
+  --color-dark-700: #55575a;
+  --color-dark-600: #6a6c6d;
+  --color-dark-500: #9a9d9f;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --radius-control: 12px;
+  --radius-card-sm: 14px;
+  --radius-card: 18px;
+  --radius-card-lg: 22px;
+  --radius-pill: 999px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--color-ink-900);
+  color: #fff;
+}
+
+.placeholder-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-placeholder-a) 0 16px,
+    var(--color-placeholder-b) 16px 32px
+  );
+}
+
+/* Custom scrollbar — warm-neutral track, ink thumb, matches the brand palette
+   instead of the OS default. Firefox + WebKit both covered. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-warm-500) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-warm-500);
+  border-radius: 999px;
+  border: 2px solid var(--color-warm-50);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-500);
+}
+
+.scrollbar-dark {
+  scrollbar-color: var(--color-dark-600) transparent;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background-color: var(--color-dark-600);
+  border: 2px solid var(--color-ink-950);
+}
