@@ -8,7 +8,7 @@ import { SiteFooter } from '@/components/marketing/site-footer';
 import { DesignCard } from '@/components/designs/design-card';
 import { Reveal, RevealGroup } from '@/components/ui/reveal';
 import { Accordion } from '@/components/ui/accordion';
-import { HERO_IMAGE, PORTFOLIO_IMAGES } from '@/lib/stock-images';
+import { HERO_IMAGE, INTERIOR_IMAGES } from '@/lib/stock-images';
 import { PORTFOLIO_PROJECTS } from '@/lib/portfolio-data';
 import { PaginatedDesigns } from '@/lib/types/design';
 
@@ -35,7 +35,7 @@ const FEATURES = [
   {
     icon: Users,
     title: 'A real architect with you',
-    body: 'Meetings, direct messages, and a shared whiteboard, built into every request from start to delivery.',
+    body: 'Meetings and direct messages, built into every request from start to delivery.',
   },
 ];
 
@@ -68,7 +68,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'The shared whiteboard during revisions was genuinely useful — we sketched the kitchen layout together in real time.',
+      "Being able to message the architect directly during revisions instead of waiting on email threads made the whole modification process feel fast.",
     name: 'Priya K.',
     location: 'Tucson, AZ',
   },
@@ -93,7 +93,7 @@ const FAQS = [
   {
     question: 'Can I talk to the architect directly?',
     answer:
-      'Yes — every purchase and modification request includes direct messaging, a shared whiteboard for sketching changes together, and the option to book a live meeting.',
+      'Yes — every purchase and modification request includes direct messaging and the option to book a live meeting.',
   },
   {
     question: 'Do you offer a referral program?',
@@ -114,7 +114,14 @@ export default async function Home() {
         {/* Hero */}
         <section className="overflow-hidden rounded-card-lg">
           <div className="relative h-[460px] sm:h-[560px] lg:h-[620px]">
-            <Image src={HERO_IMAGE} alt="A modern home at golden hour" fill priority className="object-cover" />
+            <Image
+              src={HERO_IMAGE}
+              alt="A modern home at golden hour"
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 px-6 pb-9 sm:px-12 sm:pb-14">
               <span className="inline-block rounded-pill bg-white/15 px-4 py-1.5 text-[11px] tracking-wide text-white backdrop-blur-sm">
@@ -272,6 +279,7 @@ export default async function Home() {
                       src={project.coverImage}
                       alt={project.title}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <span className="absolute left-3 top-3 rounded-pill bg-ink-900 px-3 py-1.5 text-[10px] text-white">
@@ -337,7 +345,7 @@ export default async function Home() {
                 <h2 className="text-[22px] font-normal text-white sm:text-[25px]">Own a design? Make it yours.</h2>
                 <p className="mt-3 text-[13px] leading-loose text-dark-500">
                   Add a room, resize, rework the layout. See the cost instantly, pay one total, then follow
-                  every stage — with meetings and a shared whiteboard along the way.
+                  every stage — with direct messages and meetings along the way.
                 </p>
                 <Link
                   href={user ? '/dashboard' : '/sign-up'}
@@ -400,9 +408,15 @@ export default async function Home() {
         {/* Closing image strip */}
         <Reveal>
           <section className="my-20 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {PORTFOLIO_IMAGES.slice(0, 4).map((src, i) => (
-              <div key={i} className="relative h-32 overflow-hidden rounded-card sm:h-40">
-                <Image src={src} alt="Umer Designs project" fill className="object-cover" />
+            {INTERIOR_IMAGES.slice(0, 4).map((src, i) => (
+              <div key={i} className="group relative h-32 overflow-hidden rounded-card sm:h-40">
+                <Image
+                  src={src}
+                  alt="Interior detail from a completed Umer Designs project"
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
             ))}
           </section>

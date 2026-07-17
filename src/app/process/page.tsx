@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { CheckCircle2, MessageSquare, PenTool, Video } from 'lucide-react';
+import { CheckCircle2, MessageSquare, Paperclip, Video } from 'lucide-react';
 import { getCurrentUser } from '@/lib/server/current-user';
 import { SiteHeader } from '@/components/marketing/site-header';
 import { SiteFooter } from '@/components/marketing/site-footer';
@@ -21,7 +21,7 @@ const STEPS = [
   },
   {
     title: 'Track every stage',
-    body: 'Your request moves through submitted → in review → in progress → revision → delivered. Comment, share files, and sketch together on a live whiteboard.',
+    body: 'Your request moves through submitted → in review → in progress → revision → delivered, with comments and shared files at every step.',
   },
   {
     title: 'Build with confidence',
@@ -36,9 +36,9 @@ const DURING_TOOLS = [
     body: 'Every modification request has its own comment thread, tied to the exact stage it was left at.',
   },
   {
-    icon: PenTool,
-    title: 'Shared whiteboard',
-    body: 'Sketch layout changes together in real time instead of describing them over email.',
+    icon: Paperclip,
+    title: 'Shared files',
+    body: 'Preview and download files the architect shares at every stage, right from your request.',
   },
   {
     icon: Video,

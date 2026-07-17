@@ -1,4 +1,4 @@
-// No 'server-only' guard (see env.ts) — also imported by server.ts's WS proxy.
+import 'server-only';
 
 export const ACCESS_TOKEN_COOKIE = 'ud_at';
 export const REFRESH_TOKEN_COOKIE = 'ud_rt';

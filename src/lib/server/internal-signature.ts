@@ -1,11 +1,10 @@
+import 'server-only';
 import { createHmac, randomUUID } from 'crypto';
 
 /**
  * Mirrors backend/src/common/security/internal-signature.util.ts exactly —
  * duplicated (not shared via a package) because the two apps live in
  * separate repos. Keep both in sync if this scheme ever changes.
- *
- * No 'server-only' guard (see env.ts) — also imported by server.ts's WS proxy.
  */
 function buildInternalSignaturePayload(
   timestamp: string,

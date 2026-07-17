@@ -25,7 +25,13 @@ export function DesignQuickViewModal({
       <div className="grid grid-cols-1 sm:grid-cols-2">
         <div className="relative h-56 sm:h-full">
           {design.coverImageUrl ? (
-            <Image src={design.coverImageUrl} alt={design.title} fill className="object-cover" />
+            <Image
+              src={design.coverImageUrl}
+              alt={design.title}
+              fill
+              sizes="(max-width: 640px) 92vw, 46vw"
+              className="object-cover"
+            />
           ) : (
             <div className="placeholder-stripes h-full w-full" />
           )}

@@ -1,3 +1,4 @@
+import 'server-only';
 import { z } from 'zod';
 
 /**
@@ -5,12 +6,6 @@ import { z } from 'zod';
  * src/instrumentation.ts at boot). None of these are NEXT_PUBLIC_* — the
  * backend's address and the internal signing secret must never reach a
  * client bundle.
- *
- * No 'server-only' guard here (deliberately): this module is also imported
- * by server.ts's WebSocket proxy, which runs outside Next's own module
- * pipeline — the 'server-only' package throws unconditionally there rather
- * than being a no-op. Nothing in src/lib/server/** is ever imported from a
- * 'use client' file; the directory boundary is the real guard.
  */
 const serverEnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),

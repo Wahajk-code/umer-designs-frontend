@@ -7,7 +7,6 @@ import { formatCents } from '@/lib/client/format';
 import { StatusPipeline } from '@/components/modifications/status-pipeline';
 import { Button } from '@/components/ui/button';
 import { BookMeetingForm } from '@/components/meetings/book-meeting-form';
-import { WhiteboardCanvas } from '@/components/whiteboard/whiteboard-canvas';
 
 function DownloadFileButton({ modificationId, fileId, label }: { modificationId: string; fileId: string; label: string }) {
   const [loading, setLoading] = useState(false);
@@ -41,7 +40,6 @@ export function TrackingView({ modificationId }: { modificationId: string }) {
   const [comment, setComment] = useState('');
   const [posting, setPosting] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
-  const [showWhiteboard, setShowWhiteboard] = useState(false);
 
   async function load() {
     try {
@@ -157,23 +155,11 @@ export function TrackingView({ modificationId }: { modificationId: string }) {
         >
           Book meeting
         </button>
-        <button
-          onClick={() => setShowWhiteboard((v) => !v)}
-          className="rounded-pill border border-ink-900 px-5 py-2.5 text-[12px] text-ink-900 transition-colors hover:bg-warm-100"
-        >
-          Whiteboard ✎
-        </button>
       </div>
 
       {showBooking && (
         <div className="mt-4 max-w-sm rounded-card-lg bg-white p-5">
           <BookMeetingForm modificationId={modification.id} onBooked={() => setShowBooking(false)} />
-        </div>
-      )}
-
-      {showWhiteboard && (
-        <div className="mt-4 max-w-2xl">
-          <WhiteboardCanvas modificationId={modification.id} onClose={() => setShowWhiteboard(false)} />
         </div>
       )}
     </div>
