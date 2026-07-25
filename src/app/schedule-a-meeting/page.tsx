@@ -5,7 +5,10 @@ import { Logo } from '@/components/brand/logo';
 import { Button } from '@/components/ui/button';
 import { BookMeetingForm } from '@/components/meetings/book-meeting-form';
 
-export const metadata: Metadata = { title: 'Schedule a meeting — Umer Designs' };
+export const metadata: Metadata = {
+  title: 'Schedule a meeting',
+  description: 'Book a short call with the Umer Designs architect to talk through a design, your site, or a project already underway.',
+};
 
 export default async function ScheduleMeetingPage() {
   const user = await getCurrentUser();

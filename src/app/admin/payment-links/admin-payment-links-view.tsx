@@ -63,7 +63,7 @@ export function AdminPaymentLinksView() {
     <div className="max-w-lg">
       <div className="bg-white p-4">
         <div className="text-[10px] tracking-wide text-dark-500">GENERATE LINK</div>
-        <form onSubmit={handleCreate} className="mt-3 flex flex-col gap-2">
+        <form onSubmit={handleCreate} noValidate className="mt-3 flex flex-col gap-2">
           <input
             value={clientEmail}
             onChange={(e) => setClientEmail(e.target.value)}

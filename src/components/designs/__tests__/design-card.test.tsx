@@ -1,6 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { DesignCard } from '@/components/designs/design-card';
+import { CartProvider } from '@/lib/client/cart-context';
 import { Design } from '@/lib/types/design';
+
+function renderWithCart(ui: React.ReactElement) {
+  return render(<CartProvider>{ui}</CartProvider>);
+}
 
 const baseDesign: Design = {
   id: 'd1',
@@ -23,7 +28,7 @@ const baseDesign: Design = {
 
 describe('DesignCard', () => {
   it('renders the title, formatted price, and stats', () => {
-    render(<DesignCard design={baseDesign} />);
+    renderWithCart(<DesignCard design={baseDesign} />);
     expect(screen.getByText('The Meridian')).toBeInTheDocument();
     expect(screen.getByText('$1,450')).toBeInTheDocument();
     expect(screen.getByText('2 bed')).toBeInTheDocument();
@@ -32,18 +37,18 @@ describe('DesignCard', () => {
   });
 
   it('shows the Container category badge', () => {
-    render(<DesignCard design={baseDesign} />);
+    renderWithCart(<DesignCard design={baseDesign} />);
     expect(screen.getByText('Container')).toBeInTheDocument();
   });
 
   it('links buy/details to the design detail page', () => {
-    render(<DesignCard design={baseDesign} />);
+    renderWithCart(<DesignCard design={baseDesign} />);
     const links = screen.getAllByRole('link');
     expect(links.every((link) => link.getAttribute('href') === '/designs/the-meridian')).toBe(true);
   });
 
   it('falls back to the placeholder pattern when there is no cover image', () => {
-    const { container } = render(<DesignCard design={baseDesign} />);
+    const { container } = renderWithCart(<DesignCard design={baseDesign} />);
     expect(container.querySelector('.placeholder-stripes')).toBeInTheDocument();
   });
 });

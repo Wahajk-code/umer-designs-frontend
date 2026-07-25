@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { apiFetch, ApiError } from '@/lib/client/api';
 import { TextField } from '@/components/ui/text-field';
 import { Button } from '@/components/ui/button';
+import { PasswordRequirements, passwordMeetsRequirements } from '@/components/auth/password-requirements';
 import { SafeUser } from '@/lib/types/user';
 
 export function SignUpForm() {
@@ -16,11 +17,22 @@ export function SignUpForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [referralCode, setReferralCode] = useState(searchParams.get('ref') ?? '');
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const canSubmit =
+    firstName.trim().length > 0 &&
+    lastName.trim().length > 0 &&
+    email.trim().length > 0 &&
+    passwordMeetsRequirements(password);
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!canSubmit) {
+      setPasswordTouched(true);
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
@@ -49,7 +61,7 @@ export function SignUpForm() {
       <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
         Buy plans, request modifications, and track every stage in one place.
       </p>
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
           <TextField
             label="First name"
@@ -77,16 +89,19 @@ export function SignUpForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <TextField
-          label="Password"
-          type="password"
-          name="password"
-          autoComplete="new-password"
-          required
-          minLength={10}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div>
+          <TextField
+            label="Password"
+            type="password"
+            name="password"
+            autoComplete="new-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onFocus={() => setPasswordTouched(true)}
+          />
+          {passwordTouched && <PasswordRequirements value={password} />}
+        </div>
         <TextField
           label="Referral code (optional)"
           name="referralCode"
@@ -94,7 +109,7 @@ export function SignUpForm() {
           onChange={(e) => setReferralCode(e.target.value)}
         />
         {error && <p className="text-[12px] text-red-600">{error}</p>}
-        <Button type="submit" loading={loading} className="mt-2 w-full">
+        <Button type="submit" loading={loading} disabled={!canSubmit} className="mt-2 w-full">
           Create account
         </Button>
       </form>

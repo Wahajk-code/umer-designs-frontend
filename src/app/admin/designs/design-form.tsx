@@ -93,7 +93,7 @@ export function DesignForm({ design }: DesignFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="max-w-2xl space-y-4">
       <div>
         <label className={labelClass}>Title</label>
         <input

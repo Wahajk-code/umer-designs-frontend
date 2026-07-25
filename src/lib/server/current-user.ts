@@ -17,7 +17,11 @@ export const getCurrentUser = cache(async (): Promise<SafeUser | null> => {
   try {
     return await callBackend<SafeUser>('/users/me', { accessToken });
   } catch (err) {
-    if (err instanceof BackendError && (err.statusCode === 401 || err.statusCode === 404)) {
+    // Any backend error (invalid token, backend unreachable, etc.) means we
+    // can't confirm the session — treat as signed-out rather than crashing
+    // the page. A page that works fine anonymously should never fail purely
+    // because auth couldn't be verified.
+    if (err instanceof BackendError) {
       return null;
     }
     throw err;

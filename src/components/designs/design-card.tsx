@@ -7,6 +7,7 @@ import { Eye } from 'lucide-react';
 import { Design } from '@/lib/types/design';
 import { formatCents, formatCompactCents } from '@/lib/client/format';
 import { DesignQuickViewModal } from '@/components/designs/design-quick-view-modal';
+import { AddToCartButton } from '@/components/designs/add-to-cart-button';
 
 export function DesignCard({ design }: { design: Design }) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
@@ -28,13 +29,16 @@ export function DesignCard({ design }: { design: Design }) {
         <span className="absolute left-3.5 top-3.5 rounded-pill bg-ink-900 px-3 py-1.5 text-[10px] text-white">
           {design.category === 'CONTAINER' ? 'Container' : 'Residential'}
         </span>
-        <button
-          onClick={() => setQuickViewOpen(true)}
-          aria-label={`Quick view ${design.title}`}
-          className="absolute right-3.5 top-3.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-900 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
-        >
-          <Eye size={15} />
-        </button>
+        <div className="absolute right-3.5 top-3.5 flex gap-2">
+          <AddToCartButton design={design} variant="icon" />
+          <button
+            onClick={() => setQuickViewOpen(true)}
+            aria-label={`Quick view ${design.title}`}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-900 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
+          >
+            <Eye size={15} />
+          </button>
+        </div>
       </div>
       <div className="p-4">
         <div className="flex items-baseline justify-between">
@@ -54,12 +58,7 @@ export function DesignCard({ design }: { design: Design }) {
           >
             Buy now
           </Link>
-          <Link
-            href={`/designs/${design.slug}`}
-            className="flex-1 rounded-pill border border-warm-400 py-2 text-center text-[11px] text-ink-700 transition-colors hover:bg-warm-100"
-          >
-            Details
-          </Link>
+          <AddToCartButton design={design} variant="secondary" />
         </div>
       </div>
       <DesignQuickViewModal design={design} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />

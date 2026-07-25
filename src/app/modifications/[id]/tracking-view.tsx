@@ -134,7 +134,7 @@ export function TrackingView({ modificationId }: { modificationId: string }) {
               </div>
             ))}
           </div>
-          <form onSubmit={handleComment} className="mt-3 flex gap-2">
+          <form onSubmit={handleComment} noValidate className="mt-3 flex gap-2">
             <input
               value={comment}
               onChange={(e) => setComment(e.target.value)}

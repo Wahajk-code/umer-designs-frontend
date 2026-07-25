@@ -3,7 +3,10 @@ import type { Metadata } from 'next';
 import { Logo } from '@/components/brand/logo';
 import { PayView } from './pay-view';
 
-export const metadata: Metadata = { title: 'Pay — Umer Designs' };
+export const metadata: Metadata = {
+  title: 'Pay',
+  robots: { index: false, follow: false },
+};
 
 export default async function PayPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;

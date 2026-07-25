@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CheckCircle2, MessageSquare, Paperclip, Video } from 'lucide-react';
@@ -6,26 +5,36 @@ import { getCurrentUser } from '@/lib/server/current-user';
 import { SiteHeader } from '@/components/marketing/site-header';
 import { SiteFooter } from '@/components/marketing/site-footer';
 import { Reveal, RevealGroup } from '@/components/ui/reveal';
-import { PROCESS_IMAGE } from '@/lib/stock-images';
+import { ScrollCue } from '@/components/ui/scroll-cue';
+import { EXTERIOR_IMAGES, INTERIOR_IMAGES, PROCESS_IMAGE } from '@/lib/stock-images';
+import { ProcessStepSection } from './process-step-section';
 
-export const metadata: Metadata = { title: 'How it works — Umer Designs' };
+export const metadata: Metadata = {
+  title: 'How it works',
+  description:
+    'From browsing to move-in: buy a build-ready design, optionally request priced modifications, track every stage, and get an architect one message away throughout.',
+};
 
 const STEPS = [
   {
     title: 'Browse and buy',
     body: 'Every design in the store is priced, spec’d, and ready to build. Pay once and the full CAD + PDF set unlocks in your account instantly.',
+    image: EXTERIOR_IMAGES[3],
   },
   {
     title: 'Make it yours (optional)',
     body: 'Want a bigger kitchen, an extra room, or a mirrored layout? Select changes, see one total instantly, and pay upfront — no back-and-forth quoting.',
+    image: INTERIOR_IMAGES[2],
   },
   {
     title: 'Track every stage',
     body: 'Your request moves through submitted → in review → in progress → revision → delivered, with comments and shared files at every step.',
+    image: PROCESS_IMAGE,
   },
   {
     title: 'Build with confidence',
     body: 'Final files land in your account for good. Book a meeting any time you want to talk through details with the architect directly.',
+    image: EXTERIOR_IMAGES[5],
   },
 ];
 
@@ -52,11 +61,19 @@ const DURING_TOOLS = [
   },
 ];
 
+const PIPELINE_STAGES = [
+  { label: 'Submitted & paid', done: true },
+  { label: 'In review', done: true },
+  { label: 'In progress — layout revision 2', current: true },
+  { label: 'Revision', done: false },
+  { label: 'Delivered', done: false },
+];
+
 export default async function ProcessPage() {
   const user = await getCurrentUser();
 
   return (
-    <div className="min-h-screen bg-warm-50">
+    <div className="min-h-screen overflow-hidden bg-warm-50">
       <SiteHeader isSignedIn={Boolean(user)} />
       <main className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-12">
         <Reveal>
@@ -71,32 +88,28 @@ export default async function ProcessPage() {
           </p>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
-          <Reveal className="lg:sticky lg:top-24">
-            <div className="relative h-64 overflow-hidden rounded-card-lg sm:h-96 lg:h-[500px]">
-              <Image src={PROCESS_IMAGE} alt="Architectural drafting" fill className="object-cover" />
-            </div>
-          </Reveal>
-
-          <div className="flex flex-col gap-4">
-            <RevealGroup stagger={0.08}>
-              {STEPS.map((step, i) => (
-                <div key={step.title} className="flex gap-4 rounded-card bg-white p-6">
-                  <div className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-ink-900 text-[13px] text-white">
-                    {i + 1}
-                  </div>
-                  <div>
-                    <div className="text-[14.5px] font-medium text-ink-900">{step.title}</div>
-                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-500">{step.body}</p>
-                  </div>
-                </div>
-              ))}
-            </RevealGroup>
+        <Reveal delay={0.15}>
+          <div className="mt-8 flex justify-center sm:justify-start">
+            <ScrollCue />
           </div>
+        </Reveal>
+
+        {/* One full section per step, alternating layout, each with its own scroll-linked animation */}
+        <div className="mt-4 divide-y divide-warm-300">
+          {STEPS.map((step, i) => (
+            <ProcessStepSection
+              key={step.title}
+              index={i}
+              title={step.title}
+              body={step.body}
+              image={step.image}
+              reversed={i % 2 === 1}
+            />
+          ))}
         </div>
 
         {/* Tools available at every stage */}
-        <div className="mt-24">
+        <div className="mt-20">
           <Reveal>
             <h2 className="text-[26px] font-light text-ink-900 sm:text-[30px]">Built into every request</h2>
             <p className="mt-2 max-w-lg text-[13px] leading-relaxed text-ink-500">
@@ -104,11 +117,11 @@ export default async function ProcessPage() {
             </p>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <RevealGroup stagger={0.06}>
+            <RevealGroup stagger={0.06} className="h-full">
               {DURING_TOOLS.map((tool) => (
                 <div
                   key={tool.title}
-                  className="rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
+                  className="flex h-full flex-col rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warm-100 text-ink-900">
                     <tool.icon size={18} />
@@ -121,20 +134,55 @@ export default async function ProcessPage() {
           </div>
         </div>
 
+        {/* Live pipeline preview */}
+        <Reveal>
+          <div className="mt-24 rounded-card-lg bg-ink-900 p-8 sm:p-12">
+            <div className="mx-auto max-w-md">
+              <div className="text-center text-[11px] tracking-[0.14em] text-dark-500">
+                WHAT YOU SEE · REQUEST #1042
+              </div>
+              <div className="mt-6 flex flex-col gap-4">
+                {PIPELINE_STAGES.map((stage, i) => (
+                  <Reveal key={stage.label} delay={i * 0.08} y={10}>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex h-6 w-6 flex-none items-center justify-center rounded-full text-[10px] ${
+                          stage.done
+                            ? 'bg-white text-ink-900'
+                            : stage.current
+                              ? 'border-2 border-white'
+                              : 'border border-dark-600'
+                        }`}
+                      >
+                        {stage.done ? '✓' : ''}
+                      </div>
+                      <span
+                        className={`text-[13px] ${stage.done || stage.current ? 'text-white' : 'text-dark-500'}`}
+                      >
+                        {stage.label}
+                      </span>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
         {/* CTA */}
         <Reveal>
-          <div className="mt-24 rounded-card-lg bg-ink-900 p-8 text-center sm:p-14">
-            <h2 className="text-[24px] font-light text-white sm:text-[28px]">Ready to start?</h2>
+          <div className="mt-24 rounded-card-lg bg-white p-8 text-center sm:p-14">
+            <h2 className="text-[24px] font-light text-ink-900 sm:text-[28px]">Ready to start?</h2>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="/designs"
-                className="rounded-pill bg-white px-7 py-3.5 text-[12.5px] font-medium text-ink-900 transition-transform hover:scale-[1.03]"
+                className="rounded-pill bg-ink-900 px-7 py-3.5 text-[12.5px] font-medium text-white transition-transform hover:scale-[1.03]"
               >
                 Browse the store
               </Link>
               <Link
                 href="/schedule-a-meeting"
-                className="rounded-pill border border-white/70 px-7 py-3.5 text-[12.5px] text-white transition-colors hover:bg-white/10"
+                className="rounded-pill border border-ink-900 px-7 py-3.5 text-[12.5px] text-ink-900 transition-colors hover:bg-warm-100"
               >
                 Talk to us first
               </Link>

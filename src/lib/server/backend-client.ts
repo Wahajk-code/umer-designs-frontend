@@ -37,8 +37,13 @@ export async function callBackend<T>(path: string, options: CallBackendOptions =
   const method = options.method ?? 'GET';
   const url = `${env.INTERNAL_API_URL}${path}`;
 
+  // Sign only the pathname, matching the backend guard, which verifies
+  // against `request.originalUrl.split('?')[0]` — signing the full path
+  // (with query string) here would produce a signature the backend can
+  // never match whenever the caller forwards any query params.
+  const pathname = path.split('?')[0];
   const headers: Record<string, string> = {
-    ...buildInternalAttestationHeaders(env.INTERNAL_HMAC_SECRET, method, path),
+    ...buildInternalAttestationHeaders(env.INTERNAL_HMAC_SECRET, method, pathname),
   };
   if (options.body !== undefined) {
     headers['Content-Type'] = 'application/json';

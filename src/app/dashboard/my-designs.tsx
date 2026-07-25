@@ -2,52 +2,68 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { apiFetch, ApiError } from '@/lib/client/api';
 import { Order } from '@/lib/types/order';
 import { formatCents } from '@/lib/client/format';
 
 function DownloadButton({ orderId, fileId, label }: { orderId: string; fileId: string; label: string }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   async function handleDownload() {
     setLoading(true);
-    setError(null);
     try {
       const { url } = await apiFetch<{ url: string }>(`/api/orders/${orderId}/download/${fileId}`);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not start download.');
+      toast.error('Could not start download', {
+        description: err instanceof ApiError ? err.message : 'Please try again in a moment.',
+      });
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="inline-block">
-      <button
-        onClick={handleDownload}
-        disabled={loading}
-        className="inline-block rounded-pill bg-warm-150 px-3 py-1.5 text-[10px] text-ink-900 disabled:opacity-50"
-      >
-        {loading ? 'Preparing…' : `Download ${label} ↓`}
-      </button>
-      {error && <p className="mt-1 text-[10px] text-red-600">{error}</p>}
-    </div>
+    <button
+      onClick={handleDownload}
+      disabled={loading}
+      className="inline-block rounded-pill bg-warm-150 px-3 py-1.5 text-[10px] text-ink-900 disabled:opacity-50"
+    >
+      {loading ? 'Preparing…' : `Download ${label} ↓`}
+    </button>
   );
 }
 
 export function MyDesigns() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [retryTick, setRetryTick] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-mount/retry pattern
+    setError(null);
     apiFetch<Order[]>('/api/orders')
       .then(setOrders)
-      .catch(() => setError('Could not load your orders.'));
-  }, []);
+      .catch(() => {
+        setError('Could not load your orders.');
+        toast.error('Could not load your orders', { description: 'Please check your connection and try again.' });
+      });
+  }, [retryTick]);
 
-  if (error) return <p className="text-[12px] text-red-600">{error}</p>;
+  if (error) {
+    return (
+      <div className="rounded-card-lg bg-white p-8 text-center">
+        <p className="text-[12.5px] text-ink-500">{error}</p>
+        <button
+          onClick={() => setRetryTick((t) => t + 1)}
+          className="mt-3 rounded-pill bg-ink-900 px-5 py-2.5 text-[12px] font-medium text-white transition-colors hover:bg-ink-950"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
   if (!orders) {
     return (
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -62,11 +78,6 @@ export function MyDesigns() {
 
   return (
     <div>
-      <div className="flex items-baseline justify-between">
-        <h2 className="text-[16px] font-medium text-ink-900">My designs</h2>
-        <span className="text-[10.5px] text-ink-500">re-download anytime</span>
-      </div>
-
       {paidOrders.length === 0 ? (
         <p className="mt-3 text-[12.5px] text-ink-500">
           Nothing purchased yet — browse the store to get started.

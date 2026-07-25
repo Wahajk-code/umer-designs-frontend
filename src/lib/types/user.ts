@@ -7,6 +7,7 @@ export interface SafeUser {
   lastName: string;
   role: Role;
   referralCode: string;
+  creditBalanceCents: number;
   referredById: string | null;
   createdAt: string;
   updatedAt: string;

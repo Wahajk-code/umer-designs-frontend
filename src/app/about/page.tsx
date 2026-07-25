@@ -8,7 +8,11 @@ import { SiteFooter } from '@/components/marketing/site-footer';
 import { Reveal, RevealGroup } from '@/components/ui/reveal';
 import { ABOUT_IMAGE, INTERIOR_IMAGES } from '@/lib/stock-images';
 
-export const metadata: Metadata = { title: 'About — Umer Designs' };
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'Umer Designs is an architecture practice selling build-ready container and residential plans online — priced honestly, delivered instantly, with a real architect one message away.',
+};
 
 const VALUES = [
   {
@@ -118,11 +122,11 @@ export default async function AboutPage() {
             <h2 className="text-[26px] font-light text-ink-900 sm:text-[30px]">What we hold to</h2>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <RevealGroup stagger={0.06}>
+            <RevealGroup stagger={0.06} className="h-full">
               {VALUES.map((v) => (
                 <div
                   key={v.title}
-                  className="rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
+                  className="flex h-full flex-col rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warm-100 text-ink-900">
                     <v.icon size={18} />

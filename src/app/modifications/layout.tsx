@@ -1,8 +1,11 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/server/current-user';
 import { Logo } from '@/components/brand/logo';
 import { SignOutButton } from '@/components/auth/sign-out-button';
 import { NotificationBell } from '@/components/notifications/notification-bell';
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ModificationsLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();

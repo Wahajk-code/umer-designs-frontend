@@ -41,7 +41,7 @@ export function SignInForm() {
       <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
         Sign in to track requests, message the architect, and re-download your files.
       </p>
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
         <TextField
           label="Email"
           type="email"

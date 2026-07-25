@@ -21,7 +21,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const project = PORTFOLIO_PROJECTS.find((p) => p.slug === slug);
-  return { title: project ? `${project.title} — Umer Designs` : 'Project not found' };
+  if (!project) return { title: 'Project not found' };
+  return {
+    title: project.title,
+    description: project.description,
+    openGraph: { images: [{ url: project.coverImage, width: 1200, height: 630, alt: project.title }] },
+  };
 }
 
 export default async function PortfolioCaseStudyPage({

@@ -66,7 +66,7 @@ export function AdminModificationOptionsView() {
           {options?.length === 0 && <li className="py-2 text-[12px] text-dark-500">No options yet.</li>}
         </ul>
 
-        <form onSubmit={handleCreate} className="mt-4 flex gap-2">
+        <form onSubmit={handleCreate} noValidate className="mt-4 flex gap-2">
           <input
             value={label}
             onChange={(e) => setLabel(e.target.value)}

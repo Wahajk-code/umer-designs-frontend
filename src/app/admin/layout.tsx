@@ -1,7 +1,27 @@
 import { redirect } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Building2,
+  Calendar,
+  CreditCard,
+  Link2,
+  Sliders,
+  Users,
+  Wrench,
+} from 'lucide-react';
 import { getCurrentUser } from '@/lib/server/current-user';
-import { Logo } from '@/components/brand/logo';
-import { SignOutButton } from '@/components/auth/sign-out-button';
+import { AppSidebar, SidebarNavItem } from '@/components/layout/app-sidebar';
+
+const NAV_ITEMS: SidebarNavItem[] = [
+  { href: '/admin', label: 'Overview', icon: <LayoutDashboard size={17} /> },
+  { href: '/admin/designs', label: 'Designs', icon: <Building2 size={17} /> },
+  { href: '/admin/modifications', label: 'Modifications', icon: <Wrench size={17} /> },
+  { href: '/admin/modification-options', label: 'Modification options', icon: <Sliders size={17} /> },
+  { href: '/admin/meetings', label: 'Meetings', icon: <Calendar size={17} /> },
+  { href: '/admin/payment-links', label: 'Payment links', icon: <Link2 size={17} /> },
+  { href: '/admin/referrals', label: 'Referrals', icon: <CreditCard size={17} /> },
+  { href: '/admin/users', label: 'Users', icon: <Users size={17} /> },
+];
 
 /**
  * Admin is deliberately a different visual mode (dark chrome, square
@@ -19,15 +39,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-ink-950">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-5 py-4 sm:px-10">
-        <Logo size="sm" withTagline={false} dark />
-        <div className="flex items-center gap-3">
-          <span className="hidden text-[11px] text-dark-500 sm:inline">{user.email} · admin</span>
-          <SignOutButton dark />
-        </div>
-      </header>
-      <main className="px-5 pb-16 pt-6 sm:px-10">{children}</main>
+    <div className="flex min-h-screen bg-ink-950">
+      <AppSidebar
+        variant="dark"
+        items={NAV_ITEMS}
+        userLabel="Admin"
+        userSubLabel={user.email}
+        storageKey="ud_admin_sidebar_collapsed"
+      />
+      <div className="min-w-0 flex-1">
+        <main className="px-5 pb-16 pt-6 sm:px-8">{children}</main>
+      </div>
     </div>
   );
 }

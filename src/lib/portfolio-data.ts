@@ -85,6 +85,54 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     description:
       'A steep-pitched gable roof built to shed heavy snow, with a wall of south-facing glass to pull in winter light.',
   },
+  {
+    slug: 'stacked-two',
+    title: 'Stacked Two',
+    category: 'CONTAINER',
+    year: 2023,
+    location: 'Ojai, CA',
+    sqft: 1040,
+    coverImage: PORTFOLIO_IMAGES[6],
+    gallery: [PORTFOLIO_IMAGES[6], INTERIOR_IMAGES[2], INTERIOR_IMAGES[5]],
+    description:
+      'A two-story stacked-container build on a sloped lot, using the grade change to tuck a ground-floor studio under the main living level above.',
+  },
+  {
+    slug: 'ridge-lodge',
+    title: 'Ridge Lodge',
+    category: 'RESIDENTIAL',
+    year: 2023,
+    location: 'Park City, UT',
+    sqft: 3120,
+    coverImage: PORTFOLIO_IMAGES[7],
+    gallery: [PORTFOLIO_IMAGES[7], INTERIOR_IMAGES[0], INTERIOR_IMAGES[4]],
+    description:
+      'A five-bedroom mountain home with a heavy timber-and-stone base built to anchor the structure against ridge-line winds, and a great room stacked with glass toward the valley view.',
+  },
+  {
+    slug: 'canal-container',
+    title: 'Canal Container',
+    category: 'CONTAINER',
+    year: 2022,
+    location: 'Galveston, TX',
+    sqft: 860,
+    coverImage: PORTFOLIO_IMAGES[8],
+    gallery: [PORTFOLIO_IMAGES[8], INTERIOR_IMAGES[1], INTERIOR_IMAGES[3]],
+    description:
+      'A single-container canal-front weekend home raised on piers for flood clearance, with a wraparound deck built for fishing gear and slow evenings.',
+  },
+  {
+    slug: 'low-hip-farmhouse',
+    title: 'Low Hip Farmhouse',
+    category: 'RESIDENTIAL',
+    year: 2022,
+    location: 'Lancaster County, PA',
+    sqft: 2380,
+    coverImage: PORTFOLIO_IMAGES[9],
+    gallery: [PORTFOLIO_IMAGES[9], INTERIOR_IMAGES[2], INTERIOR_IMAGES[0]],
+    description:
+      'A low hip-roofed farmhouse built to sit quietly among working fields, with a deep wraparound porch and a mudroom sized for real farm use.',
+  },
 ];
 
 export function getAllPortfolioImages(): string[] {

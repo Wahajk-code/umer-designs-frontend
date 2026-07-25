@@ -34,7 +34,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card-lg bg-white p-6 sm:p-8">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 rounded-card-lg bg-white p-6 sm:p-8">
       <TextField
         label="Name"
         name="name"

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Design } from '@/lib/types/design';
 import { formatCents, formatCompactCents } from '@/lib/client/format';
 import { Modal, ModalCloseButton } from '@/components/ui/modal';
+import { AddToCartButton } from '@/components/designs/add-to-cart-button';
 
 export function DesignQuickViewModal({
   design,
@@ -60,14 +61,17 @@ export function DesignQuickViewModal({
             </div>
           </div>
 
-          <div className="mt-auto flex items-center justify-between pt-6">
+          <div className="mt-auto flex items-center justify-between gap-3 pt-6">
             <span className="text-[20px] font-medium text-ink-900">{formatCents(design.basePriceCents)}</span>
-            <Link
-              href={`/designs/${design.slug}`}
-              className="rounded-pill bg-ink-900 px-6 py-3 text-[12px] font-medium text-white transition-colors hover:bg-ink-950"
-            >
-              View full details
-            </Link>
+            <div className="flex items-center gap-2">
+              <AddToCartButton design={design} variant="secondary" />
+              <Link
+                href={`/designs/${design.slug}`}
+                className="whitespace-nowrap rounded-pill bg-ink-900 px-6 py-3 text-[12px] font-medium text-white transition-colors hover:bg-ink-950"
+              >
+                View full details
+              </Link>
+            </div>
           </div>
         </div>
       </div>

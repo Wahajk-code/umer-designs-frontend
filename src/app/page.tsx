@@ -166,11 +166,11 @@ export default async function Home() {
 
         {/* Feature cards */}
         <section className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <RevealGroup>
+          <RevealGroup className="h-full">
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
+                className="flex h-full flex-col rounded-card bg-white p-6 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warm-100 text-ink-900">
                   <f.icon size={18} />
@@ -228,9 +228,9 @@ export default async function Home() {
             <p className="mt-1.5 max-w-lg text-[13px] text-ink-500">Four stages, no surprises along the way.</p>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <RevealGroup stagger={0.08}>
+            <RevealGroup stagger={0.08} className="h-full">
               {STEPS.map((step, i) => (
-                <div key={step.title} className="rounded-card bg-white p-6">
+                <div key={step.title} className="flex h-full flex-col rounded-card bg-white p-6">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink-900 text-[13px] text-white">
                     {i + 1}
                   </div>
@@ -267,14 +267,14 @@ export default async function Home() {
             </div>
           </Reveal>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <RevealGroup stagger={0.08}>
+            <RevealGroup stagger={0.08} className="h-full">
               {featuredProjects.map((project) => (
                 <Link
                   key={project.slug}
                   href={`/portfolio/${project.slug}`}
-                  className="group overflow-hidden rounded-card bg-white"
+                  className="group flex h-full flex-col overflow-hidden rounded-card bg-white"
                 >
-                  <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-48 w-full flex-none overflow-hidden">
                     <Image
                       src={project.coverImage}
                       alt={project.title}
@@ -286,7 +286,7 @@ export default async function Home() {
                       {project.category === 'CONTAINER' ? 'Container' : 'Residential'}
                     </span>
                   </div>
-                  <div className="p-4">
+                  <div className="flex flex-1 flex-col justify-center p-4">
                     <div className="text-[13.5px] font-medium text-ink-900">{project.title}</div>
                     <div className="mt-1 text-[11px] text-ink-500">
                       {project.location} · {project.year}
@@ -298,23 +298,50 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Closing image strip — sits mid-page as a visual breather between portfolio and testimonials */}
+        <Reveal>
+          <section className="mt-20 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {INTERIOR_IMAGES.slice(0, 4).map((src, i) => (
+              <div key={i} className="group relative h-32 overflow-hidden rounded-card sm:h-40">
+                <Image
+                  src={src}
+                  alt="Interior detail from a completed Umer Designs project"
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            ))}
+          </section>
+        </Reveal>
+
         {/* Testimonials */}
         <section className="mt-20">
           <Reveal>
             <h2 className="text-[26px] font-normal text-ink-900 sm:text-[30px]">What clients say</h2>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <RevealGroup stagger={0.08}>
+            <RevealGroup stagger={0.08} className="h-full">
               {TESTIMONIALS.map((t) => (
-                <div key={t.name} className="flex flex-col rounded-card bg-white p-6">
+                <div key={t.name} className="flex h-full flex-col rounded-card bg-white p-6">
                   <div className="flex gap-0.5 text-ink-900">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} size={13} fill="currentColor" strokeWidth={0} />
                     ))}
                   </div>
                   <p className="mt-4 flex-1 text-[12.5px] leading-relaxed text-ink-700">&ldquo;{t.quote}&rdquo;</p>
-                  <div className="mt-5 text-[12px] font-medium text-ink-900">{t.name}</div>
-                  <div className="text-[11px] text-ink-500">{t.location}</div>
+                  <div className="mt-5 flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-ink-900 text-[10.5px] font-medium text-white">
+                      {t.name
+                        .split(' ')
+                        .map((part) => part[0])
+                        .join('')}
+                    </div>
+                    <div>
+                      <div className="text-[12px] font-medium text-ink-900">{t.name}</div>
+                      <div className="text-[11px] text-ink-500">{t.location}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </RevealGroup>
@@ -405,20 +432,30 @@ export default async function Home() {
           </Reveal>
         </section>
 
-        {/* Closing image strip */}
+        {/* Final CTA */}
         <Reveal>
-          <section className="my-20 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {INTERIOR_IMAGES.slice(0, 4).map((src, i) => (
-              <div key={i} className="group relative h-32 overflow-hidden rounded-card sm:h-40">
-                <Image
-                  src={src}
-                  alt="Interior detail from a completed Umer Designs project"
-                  fill
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            ))}
+          <section className="my-20 rounded-card-lg bg-ink-900 p-8 text-center sm:p-14">
+            <h2 className="text-[24px] font-light text-white sm:text-[30px]">
+              Ready to find your <span className="font-medium">design</span>?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed text-dark-500">
+              Browse the full store, or create a free account to save designs and start a modification
+              request when you&apos;re ready.
+            </p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/designs"
+                className="rounded-pill bg-white px-7 py-3.5 text-[13px] font-medium text-ink-900 transition-transform hover:scale-[1.03]"
+              >
+                Browse the store
+              </Link>
+              <Link
+                href={user ? '/dashboard' : '/sign-up'}
+                className="rounded-pill border border-white/70 px-7 py-3.5 text-[13px] text-white transition-colors hover:bg-white/10"
+              >
+                {user ? 'Go to my dashboard' : 'Create a free account'}
+              </Link>
+            </div>
           </section>
         </Reveal>
       </main>

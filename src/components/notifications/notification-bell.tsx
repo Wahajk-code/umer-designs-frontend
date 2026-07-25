@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { Bell } from 'lucide-react';
 import { apiFetch } from '@/lib/client/api';
 import { AppNotification, NotificationsResponse } from '@/lib/types/notification';
 
@@ -65,10 +66,10 @@ export function NotificationBell({ dark = false }: { dark?: boolean }) {
     <div ref={containerRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`relative flex h-8 w-8 items-center justify-center rounded-full ${dark ? 'text-dark-500 hover:bg-white/5' : 'text-ink-700 hover:bg-warm-100'}`}
+        className={`relative flex h-8 w-8 items-center justify-center rounded-full ${dark ? 'text-white hover:bg-white/5' : 'text-ink-900 hover:bg-warm-100'}`}
         aria-label="Notifications"
       >
-        🔔
+        <Bell size={17} />
         {unreadCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] text-white">
             {unreadCount > 9 ? '9+' : unreadCount}

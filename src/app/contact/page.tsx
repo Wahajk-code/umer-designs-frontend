@@ -8,7 +8,11 @@ import { Reveal } from '@/components/ui/reveal';
 import { CONTACT_IMAGE } from '@/lib/stock-images';
 import { ContactForm } from './contact-form';
 
-export const metadata: Metadata = { title: 'Contact — Umer Designs' };
+export const metadata: Metadata = {
+  title: 'Contact',
+  description:
+    'Questions about a design, your site, or a project already underway — send Umer Designs a message or schedule a meeting with the architect directly.',
+};
 
 const INFO = [
   { icon: Mail, title: 'Email', body: 'Real replies within a business day or two.' },

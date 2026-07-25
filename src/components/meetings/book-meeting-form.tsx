@@ -50,7 +50,7 @@ export function BookMeetingForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-[11px] font-medium text-ink-700">Date</label>

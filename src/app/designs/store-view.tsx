@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { apiFetch } from '@/lib/client/api';
 import { PaginatedDesigns, DesignCategory } from '@/lib/types/design';
 import { DesignCard } from '@/components/designs/design-card';
@@ -18,6 +19,7 @@ export function StoreView() {
   const [data, setData] = useState<PaginatedDesigns | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryTick, setRetryTick] = useState(0);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-dependency-change pattern; each run's setState reflects the new params, not the previous render's props
@@ -31,9 +33,12 @@ export function StoreView() {
 
     apiFetch<PaginatedDesigns>(`/api/designs?${params.toString()}`)
       .then(setData)
-      .catch(() => setError('Could not load designs. Please try again.'))
+      .catch(() => {
+        setError('Could not load designs.');
+        toast.error('Could not load designs', { description: 'Please check your connection and try again.' });
+      })
       .finally(() => setLoading(false));
-  }, [category, sort, page]);
+  }, [category, sort, page, retryTick]);
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
 
@@ -67,7 +72,17 @@ export function StoreView() {
         </select>
       </div>
 
-      {error && <p className="mt-8 text-[13px] text-red-600">{error}</p>}
+      {error && (
+        <div className="mt-8 rounded-card-lg bg-white p-10 text-center">
+          <p className="text-[13px] text-ink-500">{error}</p>
+          <button
+            onClick={() => setRetryTick((t) => t + 1)}
+            className="mt-4 rounded-pill bg-ink-900 px-5 py-2.5 text-[12px] font-medium text-white transition-colors hover:bg-ink-950"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       {!error && loading && (
         <div className="mt-8 grid grid-cols-1 gap-[18px] sm:grid-cols-2 lg:grid-cols-3">
