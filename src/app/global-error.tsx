@@ -8,10 +8,10 @@
  * rendering to depend on anything that might have broken with it.
  */
 export default function GlobalError({
-  unstable_retry,
+  reset,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  reset: () => void;
 }) {
   return (
     <html lang="en">
@@ -35,7 +35,7 @@ export default function GlobalError({
           An unexpected error occurred while loading this page. Please try again.
         </p>
         <button
-          onClick={() => unstable_retry()}
+          onClick={() => reset()}
           style={{
             marginTop: '24px',
             borderRadius: '999px',

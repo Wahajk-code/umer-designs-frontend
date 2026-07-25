@@ -6,10 +6,10 @@ import { Logo } from '@/components/brand/logo';
 
 export default function ErrorPage({
   error,
-  unstable_retry,
+  reset,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  reset: () => void;
 }) {
   useEffect(() => {
     console.error(error);
@@ -27,7 +27,7 @@ export default function ErrorPage({
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <button
-          onClick={() => unstable_retry()}
+          onClick={() => reset()}
           className="rounded-pill bg-ink-900 px-7 py-3.5 text-[13px] font-medium text-white transition-transform hover:scale-[1.03]"
         >
           Try again
