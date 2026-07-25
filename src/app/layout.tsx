@@ -12,6 +12,14 @@ const poppins = Poppins({
   weight: ["200", "300", "400", "500", "600"],
 });
 
+// Every route in this app already resolves to server-rendered-on-demand
+// (auth state is read from cookies), so there's no static content to gain
+// from Next's build-time prerender-shell pass — and that pass is what's been
+// crashing non-deterministically on the Hostinger build host. Skipping it
+// app-wide removes the crash surface entirely instead of chasing it page by
+// page as it moves around.
+export const dynamic = "force-dynamic";
+
 const siteName = "Umer Designs";
 const siteDescription =
   "Architect-drawn container and residential plans, bought online, in your hands today — with the architect one message away.";
