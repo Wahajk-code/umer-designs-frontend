@@ -8,7 +8,13 @@ import { z } from 'zod';
  * client bundle.
  */
 const serverEnvSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  // Trimmed first: a stray trailing space/newline from pasting into a
+  // hosting panel's env-var field otherwise fails this enum check even
+  // though the intended value ("production", etc.) is correct.
+  NODE_ENV: z.preprocess(
+    (v) => (typeof v === 'string' ? v.trim() : v),
+    z.enum(['development', 'test', 'production']),
+  ).default('development'),
   PORT: z.string().default('3000'),
 
   // Server-to-server only. Never referenced from a 'use client' file.
