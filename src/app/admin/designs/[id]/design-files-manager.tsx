@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { apiFetch, ApiError } from '@/lib/client/api';
 import { uploadToCloudinary } from '@/lib/client/cloudinary-upload';
 import { DesignFile } from '@/lib/types/design';
+import { Lightbox } from '@/components/ui/lightbox';
 
 interface UploadSignature {
   cloudName: string;
@@ -24,6 +25,23 @@ export function DesignFilesManager({
   const [label, setLabel] = useState('');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
+
+  async function handlePreview(fileId: string) {
+    setPreviewLoadingId(fileId);
+    setError(null);
+    try {
+      const { url } = await apiFetch<{ url: string }>(
+        `/api/admin/designs/${designId}/files/${fileId}/preview-url`,
+      );
+      setPreviewUrl(url);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not load preview.');
+    } finally {
+      setPreviewLoadingId(null);
+    }
+  }
 
   async function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -87,13 +105,33 @@ export function DesignFilesManager({
             <span className="text-ink-900">
               {file.label} <span className="text-dark-500">· {file.format}</span>
             </span>
-            <button onClick={() => handleDelete(file.id)} className="text-red-600 underline">
-              remove
-            </button>
+            <span className="flex items-center gap-3">
+              {file.resourceType === 'image' && (
+                <button
+                  onClick={() => handlePreview(file.id)}
+                  disabled={previewLoadingId === file.id}
+                  className="text-ink-700 underline disabled:opacity-50"
+                >
+                  {previewLoadingId === file.id ? 'Loading…' : 'Preview'}
+                </button>
+              )}
+              <button onClick={() => handleDelete(file.id)} className="text-red-600 underline">
+                remove
+              </button>
+            </span>
           </li>
         ))}
         {files.length === 0 && <li className="px-3 py-3 text-[12px] text-dark-500">No files yet.</li>}
       </ul>
+
+      {previewUrl && (
+        <Lightbox
+          images={[{ src: previewUrl, alt: 'File preview' }]}
+          index={0}
+          onClose={() => setPreviewUrl(null)}
+          onIndexChange={() => undefined}
+        />
+      )}
     </div>
   );
 }

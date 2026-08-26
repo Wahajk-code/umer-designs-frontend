@@ -5,7 +5,15 @@ import { getAccessToken } from '@/lib/server/session-response';
 import { toErrorResponse } from '@/lib/server/api-error';
 
 const checkoutCartSchema = z.object({
-  designIds: z.array(z.string().uuid()).min(1).max(20),
+  items: z
+    .array(
+      z.object({
+        designId: z.string().uuid(),
+        addOnIds: z.array(z.string().uuid()).optional(),
+      }),
+    )
+    .min(1)
+    .max(20),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

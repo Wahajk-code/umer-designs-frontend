@@ -10,6 +10,15 @@ export interface DesignFile {
   createdAt: string;
 }
 
+export interface DesignAddOn {
+  id: string;
+  designId?: string;
+  label: string;
+  description: string | null;
+  addedCostCents: number;
+  active?: boolean;
+}
+
 export interface Design {
   id: string;
   title: string;
@@ -28,6 +37,7 @@ export interface Design {
   createdAt: string;
   updatedAt: string;
   files?: DesignFile[];
+  addOns?: DesignAddOn[];
 }
 
 export interface PaginatedDesigns {

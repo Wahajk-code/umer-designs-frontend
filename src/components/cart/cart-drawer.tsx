@@ -38,7 +38,12 @@ export function CartDrawer({
     try {
       const { checkoutUrl } = await apiFetch<{ checkoutUrl: string | null }>('/api/checkout-cart', {
         method: 'POST',
-        body: { designIds: items.map((i) => i.designId) },
+        body: {
+          items: items.map((i) => ({
+            designId: i.designId,
+            addOnIds: i.addOns.map((a) => a.id),
+          })),
+        },
       });
       if (!checkoutUrl) {
         clear();
@@ -90,7 +95,16 @@ export function CartDrawer({
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[12.5px] font-medium text-ink-900">{item.title}</p>
-                  <p className="text-[11.5px] text-ink-500">{formatCents(item.priceCents)}</p>
+                  <p className="text-[11.5px] text-ink-500">
+                    {formatCents(
+                      item.priceCents + item.addOns.reduce((sum, a) => sum + a.addedCostCents, 0),
+                    )}
+                  </p>
+                  {item.addOns.length > 0 && (
+                    <p className="truncate text-[10.5px] text-ink-400">
+                      + {item.addOns.map((a) => a.label).join(', ')}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={() => removeItem(item.designId)}

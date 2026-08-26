@@ -4,7 +4,10 @@ import { callBackend } from '@/lib/server/backend-client';
 import { getAccessToken } from '@/lib/server/session-response';
 import { toErrorResponse } from '@/lib/server/api-error';
 
-const checkoutSchema = z.object({ designId: z.string().uuid() });
+const checkoutSchema = z.object({
+  designId: z.string().uuid(),
+  addOnIds: z.array(z.string().uuid()).optional(),
+});
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {

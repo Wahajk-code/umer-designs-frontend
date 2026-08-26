@@ -3,12 +3,19 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { toast } from 'sonner';
 
+export interface CartAddOnSelection {
+  id: string;
+  label: string;
+  addedCostCents: number;
+}
+
 export interface CartItem {
   designId: string;
   slug: string;
   title: string;
   priceCents: number;
   coverImageUrl: string;
+  addOns: CartAddOnSelection[];
 }
 
 interface CartContextValue {
@@ -28,7 +35,10 @@ function readStoredCart(): CartItem[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as CartItem[];
+    // Backfills carts saved before add-ons existed.
+    return parsed.map((item) => ({ ...item, addOns: item.addOns ?? [] }));
   } catch {
     return [];
   }
@@ -72,7 +82,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return items.some((i) => i.designId === designId);
   }
 
-  const subtotalCents = items.reduce((sum, i) => sum + i.priceCents, 0);
+  const subtotalCents = items.reduce(
+    (sum, i) => sum + i.priceCents + i.addOns.reduce((s, a) => s + a.addedCostCents, 0),
+    0,
+  );
 
   return (
     <CartContext.Provider

@@ -5,6 +5,7 @@ import { getAccessToken } from '@/lib/server/session-response';
 import { Design } from '@/lib/types/design';
 import { DesignForm } from '../design-form';
 import { DesignFilesManager } from './design-files-manager';
+import { DesignAddOnsManager } from './design-addons-manager';
 
 export const metadata: Metadata = { title: 'Edit design — Admin' };
 
@@ -36,6 +37,13 @@ export default async function EditDesignPage({ params }: { params: Promise<{ id:
         <h2 className="text-[13px] font-medium text-white">Files</h2>
         <div className="mt-3">
           <DesignFilesManager designId={design.id} initialFiles={design.files ?? []} />
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <h2 className="text-[13px] font-medium text-white">Add-ons</h2>
+        <div className="mt-3">
+          <DesignAddOnsManager designId={design.id} />
         </div>
       </div>
     </div>

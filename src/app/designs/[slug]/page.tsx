@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -9,8 +8,8 @@ import { Design } from '@/lib/types/design';
 import { formatCents, formatCompactCents } from '@/lib/client/format';
 import { ShopBanner } from '@/components/shop/shop-banner';
 import { ShopHeader } from '@/components/shop/shop-header';
-import { BuyButton } from '@/components/designs/buy-button';
-import { AddToCartButton } from '@/components/designs/add-to-cart-button';
+import { DesignPurchasePanel } from './design-purchase-panel';
+import { DesignGallery } from '@/app/designs/[slug]/design-gallery';
 
 async function getDesign(slug: string): Promise<Design | null> {
   try {
@@ -81,20 +80,7 @@ export default async function DesignDetailPage({
           <ArrowLeft size={13} /> Back to store
         </Link>
 
-        <div className="mt-4 grid grid-cols-4 gap-1.5 overflow-hidden rounded-card-lg">
-          <div className="relative col-span-4 h-[280px] sm:h-[360px]">
-            {images[0] ? (
-              <Image src={images[0]} alt={design.title} fill className="object-cover" priority />
-            ) : (
-              <div className="placeholder-stripes h-full w-full" />
-            )}
-          </div>
-          {images.slice(1, 5).map((url, i) => (
-            <div key={i} className="relative col-span-1 h-[70px] sm:h-[90px]">
-              <Image src={url} alt={`${design.title} photo ${i + 2}`} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
+        <DesignGallery title={design.title} images={images} />
 
         <div className="mt-6 flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="text-[26px] font-medium text-ink-900">{design.title}</h1>
@@ -118,10 +104,7 @@ export default async function DesignDetailPage({
             Full CAD + PDF plan set, delivered instantly to your account the moment payment
             confirms — yours to re-download forever.
           </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <BuyButton designId={design.id} designSlug={design.slug} isSignedIn={Boolean(user)} />
-            <AddToCartButton design={design} />
-          </div>
+          <DesignPurchasePanel design={design} isSignedIn={Boolean(user)} />
         </div>
       </main>
     </div>

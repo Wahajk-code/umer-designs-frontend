@@ -58,6 +58,14 @@ body {
   color: #fff;
 }
 
+/* Guard against the text caret ever rendering invisible (e.g. browsers that
+   derive caret color from a transparent/inherited value) on any text input
+   or textarea across the app. */
+input,
+textarea {
+  caret-color: var(--color-ink-900);
+}
+
 .placeholder-stripes {
   background-image: repeating-linear-gradient(
     45deg,

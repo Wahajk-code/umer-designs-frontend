@@ -9,10 +9,12 @@ export function BuyButton({
   designId,
   designSlug,
   isSignedIn,
+  addOnIds = [],
 }: {
   designId: string;
   designSlug: string;
   isSignedIn: boolean;
+  addOnIds?: string[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ export function BuyButton({
     try {
       const { checkoutUrl } = await apiFetch<{ checkoutUrl: string }>('/api/checkout', {
         method: 'POST',
-        body: { designId },
+        body: { designId, addOnIds },
       });
       window.location.href = checkoutUrl;
     } catch (err) {

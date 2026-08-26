@@ -1,15 +1,17 @@
 'use client';
 
 import { ShoppingBag, Check } from 'lucide-react';
-import { useCart } from '@/lib/client/cart-context';
+import { useCart, CartAddOnSelection } from '@/lib/client/cart-context';
 import { Design } from '@/lib/types/design';
 
 export function AddToCartButton({
   design,
   variant = 'primary',
+  selectedAddOns = [],
 }: {
   design: Pick<Design, 'id' | 'slug' | 'title' | 'basePriceCents' | 'coverImageUrl'>;
   variant?: 'primary' | 'secondary' | 'icon';
+  selectedAddOns?: CartAddOnSelection[];
 }) {
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(design.id);
@@ -22,6 +24,7 @@ export function AddToCartButton({
       title: design.title,
       priceCents: design.basePriceCents,
       coverImageUrl: design.coverImageUrl,
+      addOns: selectedAddOns,
     });
   }
 
