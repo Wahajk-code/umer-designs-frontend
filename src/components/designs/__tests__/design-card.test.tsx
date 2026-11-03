@@ -47,8 +47,16 @@ describe('DesignCard', () => {
     expect(links.every((link) => link.getAttribute('href') === '/designs/the-meridian')).toBe(true);
   });
 
-  it('falls back to the placeholder pattern when there is no cover image', () => {
-    const { container } = renderWithCart(<DesignCard design={baseDesign} />);
-    expect(container.querySelector('.placeholder-stripes')).toBeInTheDocument();
+  it('falls back to a stock photo when there is no cover image', () => {
+    renderWithCart(<DesignCard design={baseDesign} />);
+    const img = screen.getByRole('img', { name: baseDesign.title });
+    expect(img.getAttribute('src')).toContain('images.unsplash.com');
+  });
+
+  it('falls back to a stock photo when the cover host is not allowed', () => {
+    renderWithCart(<DesignCard design={{ ...baseDesign, coverImageUrl: 'https://example.com/cover.jpg' }} />);
+    const img = screen.getByRole('img', { name: baseDesign.title });
+    expect(img.getAttribute('src')).toContain('images.unsplash.com');
+    expect(img.getAttribute('src')).not.toContain('example.com');
   });
 });

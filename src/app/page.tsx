@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { Download, Wand2, Users, ArrowRight, Star } from 'lucide-react';
 import { getCurrentUser } from '@/lib/server/current-user';
 import { callBackend } from '@/lib/server/backend-client';

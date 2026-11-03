@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
+import { fallbackImageFor } from '@/lib/stock-images';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ShoppingBag, Trash2 } from 'lucide-react';
@@ -87,11 +88,14 @@ export function CartDrawer({
             {items.map((item) => (
               <div key={item.designId} className="flex items-center gap-3 rounded-control p-2 hover:bg-warm-50">
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-control bg-warm-100">
-                  {item.coverImageUrl ? (
-                    <Image src={item.coverImageUrl} alt={item.title} fill className="object-cover" />
-                  ) : (
-                    <div className="placeholder-stripes h-full w-full" />
-                  )}
+                  <Image
+                    src={item.coverImageUrl}
+                    fallbackSrc={fallbackImageFor(item.slug)}
+                    alt={item.title}
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[12.5px] font-medium text-ink-900">{item.title}</p>

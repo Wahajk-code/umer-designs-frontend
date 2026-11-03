@@ -37,6 +37,13 @@ export const PORTFOLIO_IMAGES = [
   ...INTERIOR_IMAGES,
 ];
 
+/** Stable stock fallback for a design whose own image is missing/broken. */
+export function fallbackImageFor(key: string, pool: string[] = EXTERIOR_IMAGES): string {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return pool[h % pool.length];
+}
+
 export const ABOUT_IMAGE = unsplash('photo-1494526585095-c41746248156', 1200);
 export const PROCESS_IMAGE = unsplash('photo-1512917774080-9991f1c4c750', 1200);
 export const CONTACT_IMAGE = unsplash('photo-1502672260266-1c1ef2d93688', 1200);

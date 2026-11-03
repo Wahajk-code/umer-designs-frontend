@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import { RouteSplash } from "@/components/ui/route-splash";
 import { CartProvider } from "@/lib/client/cart-context";
 import { getServerEnv } from "@/lib/server/env";
 import { HERO_IMAGE } from "@/lib/stock-images";
@@ -69,6 +70,7 @@ export default function RootLayout({
         />
         <CartProvider>{children}</CartProvider>
         <Toaster />
+        <RouteSplash />
       </body>
     </html>
   );

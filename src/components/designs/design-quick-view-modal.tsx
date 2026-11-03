@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { Design } from '@/lib/types/design';
 import { formatCents, formatCompactCents } from '@/lib/client/format';
 import { Modal, ModalCloseButton } from '@/components/ui/modal';
 import { AddToCartButton } from '@/components/designs/add-to-cart-button';
+import { fallbackImageFor } from '@/lib/stock-images';
 
 export function DesignQuickViewModal({
   design,
@@ -20,22 +21,19 @@ export function DesignQuickViewModal({
     <Modal
       open={open}
       onClose={onClose}
-      className="w-[92vw] max-w-3xl overflow-hidden"
+      className="max-h-[90vh] w-[92vw] max-w-3xl overflow-y-auto"
       labelledBy="quick-view-title"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2">
-        <div className="relative h-56 sm:h-full">
-          {design.coverImageUrl ? (
-            <Image
-              src={design.coverImageUrl}
-              alt={design.title}
-              fill
-              sizes="(max-width: 640px) 92vw, 46vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="placeholder-stripes h-full w-full" />
-          )}
+        <div className="relative h-56 overflow-hidden bg-warm-100 sm:h-auto sm:min-h-[380px]">
+          <Image
+            src={design.coverImageUrl}
+            fallbackSrc={fallbackImageFor(design.slug)}
+            alt={design.title}
+            fill
+            sizes="(max-width: 640px) 92vw, 384px"
+            className="object-cover"
+          />
         </div>
         <div className="flex flex-col p-6">
           <div className="flex items-start justify-between gap-3">
@@ -61,10 +59,14 @@ export function DesignQuickViewModal({
             </div>
           </div>
 
-          <div className="mt-auto flex items-center justify-between gap-3 pt-6">
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
             <span className="text-[20px] font-medium text-ink-900">{formatCents(design.basePriceCents)}</span>
             <div className="flex items-center gap-2">
-              <AddToCartButton design={design} variant="secondary" />
+              <AddToCartButton
+                design={design}
+                variant="secondary"
+                className="flex-none border-ink-900 px-5 py-3 text-[12px] font-medium text-ink-900"
+              />
               <Link
                 href={`/designs/${design.slug}`}
                 className="whitespace-nowrap rounded-pill bg-ink-900 px-6 py-3 text-[12px] font-medium text-white transition-colors hover:bg-ink-950"

@@ -1,20 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { Expand } from 'lucide-react';
 import { Lightbox } from '@/components/ui/lightbox';
+import { EXTERIOR_IMAGES, INTERIOR_IMAGES } from '@/lib/stock-images';
 
-export function DesignGallery({ title, images }: { title: string; images: string[] }) {
+export function DesignGallery({ title, images: rawImages }: { title: string; images: string[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  if (images.length === 0) {
-    return (
-      <div className="mt-4 overflow-hidden rounded-card-lg">
-        <div className="placeholder-stripes h-[280px] w-full sm:h-[360px]" />
-      </div>
-    );
-  }
+  // Never show an empty gallery: pad with working stock photos.
+  const images = rawImages.length > 0 ? rawImages : [EXTERIOR_IMAGES[0], ...INTERIOR_IMAGES.slice(0, 4)];
 
   return (
     <>

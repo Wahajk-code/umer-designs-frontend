@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect } from 'react';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Modal, ModalCloseButton } from '@/components/ui/modal';
 

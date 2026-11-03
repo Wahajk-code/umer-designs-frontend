@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface ProcessStepSectionProps {

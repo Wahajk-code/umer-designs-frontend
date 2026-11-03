@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { Expand } from 'lucide-react';
 import { Lightbox } from '@/components/ui/lightbox';
 

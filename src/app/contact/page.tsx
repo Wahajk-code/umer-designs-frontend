@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import type { Metadata } from 'next';
 import { Mail, Clock, MapPin } from 'lucide-react';
 import { getCurrentUser } from '@/lib/server/current-user';

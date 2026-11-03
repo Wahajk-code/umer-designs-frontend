@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage as Image } from '@/components/ui/safe-image';
 import { Eye } from 'lucide-react';
 import { Design } from '@/lib/types/design';
 import { formatCents, formatCompactCents } from '@/lib/client/format';
 import { DesignQuickViewModal } from '@/components/designs/design-quick-view-modal';
 import { AddToCartButton } from '@/components/designs/add-to-cart-button';
+import { fallbackImageFor } from '@/lib/stock-images';
 
 export function DesignCard({ design }: { design: Design }) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
@@ -15,17 +16,14 @@ export function DesignCard({ design }: { design: Design }) {
   return (
     <div className="group overflow-hidden rounded-card bg-white shadow-[0_1px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.09)]">
       <div className="relative h-[180px] w-full overflow-hidden">
-        {design.coverImageUrl ? (
-          <Image
-            src={design.coverImageUrl}
-            alt={design.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="placeholder-stripes h-full w-full" />
-        )}
+        <Image
+          src={design.coverImageUrl}
+          fallbackSrc={fallbackImageFor(design.slug)}
+          alt={design.title}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         <span className="absolute left-3.5 top-3.5 rounded-pill bg-ink-900 px-3 py-1.5 text-[10px] text-white">
           {design.category === 'CONTAINER' ? 'Container' : 'Residential'}
         </span>

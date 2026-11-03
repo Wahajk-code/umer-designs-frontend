@@ -3,15 +3,18 @@
 import { ShoppingBag, Check } from 'lucide-react';
 import { useCart, CartAddOnSelection } from '@/lib/client/cart-context';
 import { Design } from '@/lib/types/design';
+import { cn } from '@/lib/client/cn';
 
 export function AddToCartButton({
   design,
   variant = 'primary',
   selectedAddOns = [],
+  className,
 }: {
   design: Pick<Design, 'id' | 'slug' | 'title' | 'basePriceCents' | 'coverImageUrl'>;
   variant?: 'primary' | 'secondary' | 'icon';
   selectedAddOns?: CartAddOnSelection[];
+  className?: string;
 }) {
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(design.id);
@@ -46,7 +49,10 @@ export function AddToCartButton({
       <button
         onClick={handleClick}
         disabled={inCart}
-        className="flex-1 rounded-pill border border-warm-400 py-2 text-center text-[11px] text-ink-700 transition-colors hover:bg-warm-100 disabled:opacity-60"
+        className={cn(
+          'flex-1 whitespace-nowrap rounded-pill border border-warm-400 px-4 py-2 text-center text-[11px] text-ink-700 transition-colors hover:bg-warm-100 disabled:opacity-60',
+          className,
+        )}
       >
         {inCart ? 'In cart' : 'Add to cart'}
       </button>

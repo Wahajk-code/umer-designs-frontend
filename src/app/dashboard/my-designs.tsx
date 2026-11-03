@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import { apiFetch, ApiError } from '@/lib/client/api';
 import { Order } from '@/lib/types/order';
 import { formatCents } from '@/lib/client/format';
+import { SafeImage } from '@/components/ui/safe-image';
+import { fallbackImageFor } from '@/lib/stock-images';
 
 function DownloadButton({ orderId, fileId, label }: { orderId: string; fileId: string; label: string }) {
   const [loading, setLoading] = useState(false);
@@ -86,7 +88,16 @@ export function MyDesigns() {
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {paidOrders.map((order) => (
             <div key={order.id} className="overflow-hidden rounded-card-sm bg-white">
-              <div className="placeholder-stripes h-24 w-full" />
+              <div className="relative h-24 w-full overflow-hidden bg-warm-100">
+                <SafeImage
+                  src={order.design.coverImageUrl}
+                  fallbackSrc={fallbackImageFor(order.design.slug)}
+                  alt={order.design.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  className="object-cover"
+                />
+              </div>
               <div className="p-3.5">
                 <div className="text-[12px] font-medium text-ink-900">{order.design.title}</div>
                 <div className="mt-0.5 text-[9.5px] text-ink-500">
