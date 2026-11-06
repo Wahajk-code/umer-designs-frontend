@@ -10,6 +10,7 @@ const checkoutCartSchema = z.object({
       z.object({
         designId: z.string().uuid(),
         addOnIds: z.array(z.string().uuid()).optional(),
+        modificationOptionIds: z.array(z.string().uuid()).max(10).optional(),
       }),
     )
     .min(1)

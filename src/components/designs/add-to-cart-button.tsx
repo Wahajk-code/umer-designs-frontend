@@ -9,11 +9,13 @@ export function AddToCartButton({
   design,
   variant = 'primary',
   selectedAddOns = [],
+  selectedModifications = [],
   className,
 }: {
   design: Pick<Design, 'id' | 'slug' | 'title' | 'basePriceCents' | 'coverImageUrl'>;
   variant?: 'primary' | 'secondary' | 'icon';
   selectedAddOns?: CartAddOnSelection[];
+  selectedModifications?: CartAddOnSelection[];
   className?: string;
 }) {
   const { addItem, isInCart } = useCart();
@@ -28,6 +30,7 @@ export function AddToCartButton({
       priceCents: design.basePriceCents,
       coverImageUrl: design.coverImageUrl,
       addOns: selectedAddOns,
+      modifications: selectedModifications,
     });
   }
 

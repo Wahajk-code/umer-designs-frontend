@@ -58,6 +58,11 @@ export function AppSidebar({ variant, items, userLabel, userSubLabel, storageKey
   const activeBg = dark ? 'bg-white/10' : 'bg-ink-900';
   const activeText = dark ? 'text-white' : 'text-white';
 
+  // Longest matching href wins, so "Overview" (/dashboard) isn't also lit on /dashboard/designs.
+  const activeHref = items
+    .filter((i) => pathname === i.href || pathname.startsWith(`${i.href}/`))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
   const content = (
     <div className={`flex h-full flex-col ${bg}`}>
       <div className={`flex items-center justify-between border-b px-4 py-4 ${border}`}>
@@ -84,12 +89,13 @@ export function AppSidebar({ variant, items, userLabel, userSubLabel, storageKey
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <div className="flex flex-col gap-1">
           {items.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active = item.href === activeHref;
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
+                aria-current={active ? 'page' : undefined}
                 title={collapsed ? item.label : undefined}
                 className={`flex items-center gap-3 rounded-control px-3 py-2.5 text-[12.5px] transition-colors ${
                   active ? `${activeBg} ${activeText}` : `${textBase} ${hover}`

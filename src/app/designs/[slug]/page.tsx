@@ -10,6 +10,7 @@ import { ShopBanner } from '@/components/shop/shop-banner';
 import { ShopHeader } from '@/components/shop/shop-header';
 import { DesignPurchasePanel } from './design-purchase-panel';
 import { DesignGallery } from '@/app/designs/[slug]/design-gallery';
+import { resolveBack } from '@/lib/back-link';
 
 async function getDesign(slug: string): Promise<Design | null> {
   try {
@@ -39,10 +40,13 @@ export async function generateMetadata({
 
 export default async function DesignDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string | string[] }>;
 }) {
   const { slug } = await params;
+  const back = resolveBack((await searchParams).from);
   const [design, user] = await Promise.all([getDesign(slug), getCurrentUser()]);
   if (!design) notFound();
 
@@ -74,10 +78,10 @@ export default async function DesignDetailPage({
 
       <main className="mx-auto max-w-4xl px-5 pb-24 sm:px-10">
         <Link
-          href="/designs"
+          href={back.href}
           className="mt-6 inline-flex items-center gap-1.5 text-[12px] text-ink-700 underline underline-offset-2"
         >
-          <ArrowLeft size={13} /> Back to store
+          <ArrowLeft size={13} /> {back.label}
         </Link>
 
         <DesignGallery title={design.title} images={images} />
@@ -86,6 +90,12 @@ export default async function DesignDetailPage({
           <h1 className="text-[26px] font-medium text-ink-900">{design.title}</h1>
           <span className="text-[20px] text-ink-900">{formatCents(design.basePriceCents)}</span>
         </div>
+        <a
+          href="#customize"
+          className="mt-3 inline-flex items-center gap-2 rounded-pill border border-ink-900 px-4 py-2 text-[12px] text-ink-900 transition-colors hover:bg-ink-900 hover:text-white"
+        >
+          Need changes? Customise this plan — add a room, resize &amp; more →
+        </a>
 
         <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-ink-500">
           <span className="rounded-pill bg-white px-3 py-1.5">{design.bedrooms} bed</span>

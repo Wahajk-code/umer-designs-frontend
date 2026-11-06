@@ -49,16 +49,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
+    // Never settle an order for a session whose payment hasn't actually been collected.
+    if (session.payment_status === 'unpaid') {
+      return NextResponse.json({ received: true, ignored: 'unpaid' });
+    }
     checkoutSessionId = session.id;
     paymentIntentId =
       typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
     metadata = session.metadata ?? undefined;
   }
 
-  await callBackend('/webhooks/stripe', {
-    method: 'POST',
-    body: { eventId: event.id, eventType: event.type, checkoutSessionId, paymentIntentId, metadata },
-  });
+  try {
+    await callBackend('/webhooks/stripe', {
+      method: 'POST',
+      body: { eventId: event.id, eventType: event.type, checkoutSessionId, paymentIntentId, metadata },
+    });
+  } catch (err) {
+    // A non-2xx makes Stripe retry with backoff (for up to 3 days) — exactly what we want
+    // if the backend was briefly down; the backend releases its idempotency marker on failure.
+    console.error(`[stripe-webhook] forwarding event ${event.id} failed:`, err);
+    return NextResponse.json(
+      { statusCode: 500, error: 'Internal Server Error', message: 'Could not process event; will be retried.' },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ received: true });
 }

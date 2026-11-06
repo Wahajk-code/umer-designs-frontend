@@ -10,6 +10,31 @@ interface CloudinaryUploadResult {
   public_id: string;
   resource_type: string;
   format: string;
+  secure_url: string;
+}
+
+/**
+ * Public storefront photo upload (design cover/gallery) — uses the separate
+ * public image signature, so it's a normal `upload` asset with a permanent URL.
+ * Returns the https URL to store on the design.
+ */
+export async function uploadPublicImage(file: File, signature: UploadSignature): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('api_key', signature.apiKey);
+  formData.append('timestamp', String(signature.timestamp));
+  formData.append('signature', signature.signature);
+  formData.append('folder', signature.folder);
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body?.error?.message ?? 'Image upload failed.');
+  }
+  return ((await response.json()) as CloudinaryUploadResult).secure_url;
 }
 
 /**

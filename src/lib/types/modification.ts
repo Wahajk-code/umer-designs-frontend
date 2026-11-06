@@ -44,7 +44,34 @@ export interface ModificationFile {
   createdAt: string;
 }
 
+export interface ModificationClient {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+/** Row in the admin queue: includes the client and the latest event (for "last activity"). */
+export interface AdminModificationRow extends Omit<Modification, 'events' | 'files'> {
+  user: ModificationClient;
+  events: { createdAt: string; kind: 'STATUS_CHANGE' | 'COMMENT'; author: { role: 'USER' | 'ADMIN' } | null }[];
+}
+
+/** One conversation in the admin Messages inbox. */
+export interface MessageThread {
+  modificationId: string;
+  status: ModificationStatus;
+  createdAt: string;
+  design: { id: string; title: string; slug: string; coverImageUrl: string };
+  client: ModificationClient;
+  messageCount: number;
+  lastMessage: { comment: string | null; createdAt: string; fromAdmin: boolean; authorName: string | null } | null;
+  awaitingReply: boolean;
+  lastActivityAt: string;
+}
+
 export interface Modification {
+  user?: ModificationClient;
   id: string;
   userId: string;
   designId: string;

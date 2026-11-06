@@ -4,6 +4,8 @@ import { cn } from '@/lib/client/cn';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
   loading?: boolean;
+  /** Label shown while loading (default "Please wait…"). */
+  loadingText?: string;
 }
 
 const base =
@@ -16,7 +18,7 @@ const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { className, variant = 'primary', loading, disabled, children, ...props },
+  { className, variant = 'primary', loading, loadingText = 'Please wait…', disabled, children, ...props },
   ref,
 ) {
   return (
@@ -26,7 +28,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? 'Please wait…' : children}
+      {loading ? (
+        <span className="inline-flex items-center gap-2">
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden />
+          {loadingText}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 });

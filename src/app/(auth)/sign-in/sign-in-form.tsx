@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useTransition, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { apiFetch, ApiError } from '@/lib/client/api';
@@ -15,22 +15,36 @@ export function SignInForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [navigating, startTransition] = useTransition();
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      await apiFetch<{ user: SafeUser }>('/api/auth/login', {
+      const { user } = await apiFetch<{ user: SafeUser }>('/api/auth/login', {
         method: 'POST',
         body: { email, password },
       });
-      const next = searchParams.get('next') ?? '/dashboard';
-      router.push(next);
-      router.refresh();
+      const requested = searchParams.get('next');
+      // Only follow same-site relative paths (no //evil.com open redirects).
+      const safeNext = requested && requested.startsWith('/') && !requested.startsWith('//') ? requested : null;
+      // Admins go straight to the admin panel; clients to their dashboard (or where they were headed).
+      const next =
+        user?.role === 'ADMIN'
+          ? safeNext?.startsWith('/admin')
+            ? safeNext
+            : '/admin'
+          : safeNext && !safeNext.startsWith('/admin')
+            ? safeNext
+            : '/dashboard';
+      // Keep "Signing in…" on screen until the destination has rendered.
+      startTransition(() => {
+        router.push(next);
+        router.refresh();
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
-    } finally {
       setLoading(false);
     }
   }
@@ -61,7 +75,7 @@ export function SignInForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <p className="text-[12px] text-red-600">{error}</p>}
-        <Button type="submit" loading={loading} className="mt-2 w-full">
+        <Button type="submit" loading={loading || navigating} loadingText="Signing in…" className="mt-2 w-full">
           Sign in
         </Button>
       </form>

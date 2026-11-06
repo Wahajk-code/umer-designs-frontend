@@ -5,7 +5,8 @@ import { Toaster as SonnerToaster } from 'sonner';
 export function Toaster() {
   return (
     <SonnerToaster
-      position="bottom-right"
+      position="top-center"
+      visibleToasts={3}
       toastOptions={{
         classNames: {
           toast: 'rounded-card! bg-ink-900! text-white! border-none! shadow-[0_8px_30px_rgba(0,0,0,0.25)]!',

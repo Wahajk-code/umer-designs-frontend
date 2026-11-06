@@ -18,7 +18,15 @@ export function PayView({ token }: { token: string }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    apiFetch<PaymentLinkPreview>(`/api/payment-links/${token}`)
+    // Local dev: no Stripe webhook reaches localhost, so verify the paid session
+    // with the backend first (a harmless 404 in production). Then load the status.
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    const confirmed = sessionId
+      ? apiFetch('/api/payments/confirm', { method: 'POST', body: { sessionId } }).catch(() => undefined)
+      : Promise.resolve();
+
+    confirmed
+      .then(() => apiFetch<PaymentLinkPreview>(`/api/payment-links/${token}`))
       .then(setPreview)
       .catch((err) => {
         setPreview(null);

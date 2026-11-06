@@ -1,18 +1,6 @@
-import type { Metadata } from 'next';
-import { DesignForm } from '../design-form';
+import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = { title: 'New design — Admin' };
-
+/** Creating a design is a modal on the designs list now. */
 export default function NewDesignPage() {
-  return (
-    <div>
-      <h1 className="text-[18px] font-medium text-white">New design</h1>
-      <p className="mt-1 text-[12px] text-dark-500">
-        Designs are created as drafts. Publish once the details and cover image are ready.
-      </p>
-      <div className="mt-6">
-        <DesignForm />
-      </div>
-    </div>
-  );
+  redirect('/admin/designs?new=1');
 }

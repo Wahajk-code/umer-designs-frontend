@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { LayoutDashboard, FolderOpen, Wallet, Settings } from 'lucide-react';
+import { LayoutDashboard, FolderOpen, ClipboardList, Wallet, Settings } from 'lucide-react';
 import { getCurrentUser } from '@/lib/server/current-user';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { AppSidebar, SidebarNavItem } from '@/components/layout/app-sidebar';
@@ -10,6 +10,7 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 const NAV_ITEMS: SidebarNavItem[] = [
   { href: '/dashboard', label: 'Overview', icon: <LayoutDashboard size={17} /> },
   { href: '/dashboard/designs', label: 'My Designs', icon: <FolderOpen size={17} /> },
+  { href: '/dashboard/requests', label: 'Requests & tracking', icon: <ClipboardList size={17} /> },
   { href: '/dashboard/referrals', label: 'Referrals & Credits', icon: <Wallet size={17} /> },
   { href: '/dashboard/settings', label: 'Settings', icon: <Settings size={17} /> },
 ];
@@ -18,6 +19,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const user = await getCurrentUser();
   if (!user) {
     redirect('/sign-in?next=/dashboard');
+  }
+  // Admin accounts live in the admin panel, never the client dashboard.
+  if (user.role === 'ADMIN') {
+    redirect('/admin');
   }
 
   return (

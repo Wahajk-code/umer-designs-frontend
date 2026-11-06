@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { apiFetch } from '@/lib/client/api';
 import { PaginatedDesigns, DesignCategory } from '@/lib/types/design';
 import { DesignCard } from '@/components/designs/design-card';
+import { useCheckoutCancelledToast } from '@/components/checkout/checkout-return';
 
 const PAGE_SIZE = 6;
 
@@ -16,6 +17,7 @@ const CATEGORY_FILTERS: { label: string; value: DesignCategory | undefined }[] =
 ];
 
 export function StoreView() {
+  useCheckoutCancelledToast();
   const [category, setCategory] = useState<DesignCategory | undefined>(undefined);
   const [sort, setSort] = useState<'newest' | 'price_asc' | 'price_desc'>('newest');
   const [page, setPage] = useState(1);

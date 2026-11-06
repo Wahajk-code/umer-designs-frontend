@@ -32,6 +32,25 @@ interface BackendErrorShape {
  * "public" content, because the backend's default posture is closed: it only
  * accepts requests that prove they came from this BFF.
  */
+/**
+ * The visitor's IP, forwarded so Nest rate-limits per user instead of per
+ * BFF server (otherwise every visitor shares one bucket). The last
+ * x-forwarded-for hop is the one our own hosting proxy appended — earlier
+ * entries are client-supplied and spoofable. Undefined outside a request
+ * (e.g. build-time sitemap), where the backend falls back to the socket IP.
+ */
+async function forwardedClientIp(): Promise<string | undefined> {
+  try {
+    const { headers } = await import('next/headers');
+    const h = await headers();
+    const xff = h.get('x-forwarded-for');
+    const ip = (xff ? xff.split(',').at(-1) : h.get('x-real-ip'))?.trim();
+    return ip && /^[0-9a-fA-F:.]{2,45}$/.test(ip) ? ip : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function callBackend<T>(path: string, options: CallBackendOptions = {}): Promise<T> {
   const env = getServerEnv();
   const method = options.method ?? 'GET';
@@ -50,6 +69,10 @@ export async function callBackend<T>(path: string, options: CallBackendOptions =
   }
   if (options.accessToken) {
     headers.Authorization = `Bearer ${options.accessToken}`;
+  }
+  const clientIp = await forwardedClientIp();
+  if (clientIp) {
+    headers['x-client-ip'] = clientIp;
   }
 
   let response: Response;

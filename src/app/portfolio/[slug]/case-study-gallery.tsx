@@ -36,14 +36,13 @@ export function CaseStudyGallery({ images, title }: { images: string[]; title: s
         ))}
       </div>
 
-      {openIndex !== null && (
-        <Lightbox
-          images={lightboxImages}
-          index={openIndex}
-          onClose={() => setOpenIndex(null)}
-          onIndexChange={setOpenIndex}
-        />
-      )}
+      <Lightbox
+        open={openIndex !== null}
+        images={lightboxImages}
+        index={openIndex ?? 0}
+        onClose={() => setOpenIndex(null)}
+        onIndexChange={setOpenIndex}
+      />
     </>
   );
 }

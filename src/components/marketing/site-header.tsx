@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
-import { CartButton } from '@/components/cart/cart-drawer';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
@@ -43,7 +42,6 @@ export function SiteHeader({ isSignedIn = false }: { isSignedIn?: boolean }) {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <CartButton isSignedIn={isSignedIn} />
           {isSignedIn ? (
             <Link
               href="/dashboard"
@@ -67,7 +65,6 @@ export function SiteHeader({ isSignedIn = false }: { isSignedIn?: boolean }) {
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <CartButton isSignedIn={isSignedIn} />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]"

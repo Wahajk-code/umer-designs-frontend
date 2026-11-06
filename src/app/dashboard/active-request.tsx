@@ -31,7 +31,7 @@ export function ActiveRequest() {
           </div>
         </div>
         <Link
-          href={`/modifications/${active.id}`}
+          href={`/dashboard/requests/${active.id}`}
           className="rounded-pill bg-white px-5 py-2.5 text-[11.5px] font-medium text-ink-900"
         >
           View tracking →

@@ -41,6 +41,32 @@ describe('POST /api/webhooks/stripe', () => {
     expect(callBackendMock).not.toHaveBeenCalled();
   });
 
+  function signed(payload: string) {
+    return Stripe.webhooks.generateTestHeaderString({ payload, secret: WEBHOOK_SECRET });
+  }
+
+  it('ignores a checkout session that has not actually been paid', async () => {
+    const payload = JSON.stringify({
+      id: 'evt_unpaid',
+      type: 'checkout.session.completed',
+      data: { object: { id: 'cs_1', payment_status: 'unpaid', metadata: { kind: 'design_order', recordId: 'o1' } } },
+    });
+    const res = await POST(makeRequest(payload, signed(payload)) as never);
+    expect(res.status).toBe(200);
+    expect(callBackendMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 500 (so Stripe retries) when the backend fails to process the event', async () => {
+    callBackendMock.mockRejectedValueOnce(new Error('backend down'));
+    const payload = JSON.stringify({
+      id: 'evt_retry',
+      type: 'checkout.session.completed',
+      data: { object: { id: 'cs_2', payment_status: 'paid', metadata: { kind: 'design_order', recordId: 'o1' } } },
+    });
+    const res = await POST(makeRequest(payload, signed(payload)) as never);
+    expect(res.status).toBe(500);
+  });
+
   it('accepts a validly signed event and forwards a minimal trusted payload', async () => {
     const payload = JSON.stringify({
       id: 'evt_test_1',

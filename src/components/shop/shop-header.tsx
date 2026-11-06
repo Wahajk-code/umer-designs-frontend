@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
-import { CartButton } from '@/components/cart/cart-drawer';
 
 interface ShopHeaderProps {
   isSignedIn: boolean;
@@ -38,7 +37,6 @@ export function ShopHeader({ isSignedIn }: ShopHeaderProps) {
           >
             <ArrowLeft size={13} /> Back to website
           </Link>
-          <CartButton isSignedIn={isSignedIn} />
           <Link
             href={isSignedIn ? '/dashboard' : '/sign-in'}
             className="rounded-pill bg-white px-5 py-2.5 text-[12px] text-ink-900 shadow-[0_1px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-warm-100"
@@ -48,7 +46,6 @@ export function ShopHeader({ isSignedIn }: ShopHeaderProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:hidden">
-          <CartButton isSignedIn={isSignedIn} />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]"

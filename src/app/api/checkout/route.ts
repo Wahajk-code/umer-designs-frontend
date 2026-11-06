@@ -7,6 +7,7 @@ import { toErrorResponse } from '@/lib/server/api-error';
 const checkoutSchema = z.object({
   designId: z.string().uuid(),
   addOnIds: z.array(z.string().uuid()).optional(),
+  modificationOptionIds: z.array(z.string().uuid()).max(10).optional(),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

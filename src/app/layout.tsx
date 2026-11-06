@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { RouteSplash } from "@/components/ui/route-splash";
 import { CartProvider } from "@/lib/client/cart-context";
+import { CartLauncher } from "@/components/cart/cart-drawer";
 import { getServerEnv } from "@/lib/server/env";
 import { HERO_IMAGE } from "@/lib/stock-images";
 import "./globals.css";
@@ -68,7 +69,10 @@ export default function RootLayout({
            
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <CartLauncher />
+        </CartProvider>
         <Toaster />
         <RouteSplash />
       </body>

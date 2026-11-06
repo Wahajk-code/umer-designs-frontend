@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { apiFetch, ApiError } from '@/lib/client/api';
@@ -20,6 +20,7 @@ export function SignUpForm() {
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [navigating, startTransition] = useTransition();
 
   const canSubmit =
     firstName.trim().length > 0 &&
@@ -46,11 +47,12 @@ export function SignUpForm() {
           referralCode: referralCode || undefined,
         },
       });
-      router.push('/dashboard');
-      router.refresh();
+      startTransition(() => {
+        router.push('/dashboard');
+        router.refresh();
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
-    } finally {
       setLoading(false);
     }
   }
@@ -109,7 +111,7 @@ export function SignUpForm() {
           onChange={(e) => setReferralCode(e.target.value)}
         />
         {error && <p className="text-[12px] text-red-600">{error}</p>}
-        <Button type="submit" loading={loading} disabled={!canSubmit} className="mt-2 w-full">
+        <Button type="submit" loading={loading || navigating} loadingText="Creating your account…" disabled={!canSubmit} className="mt-2 w-full">
           Create account
         </Button>
       </form>

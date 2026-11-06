@@ -1,8 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { apiFetch } from '@/lib/client/api';
+import { useCallback, useEffect, useState } from 'react';
+import { ArrowRight, Gift } from 'lucide-react';
+import { apiFetch, ApiError } from '@/lib/client/api';
 import { formatCents } from '@/lib/client/format';
+import {
+  AdminPageHeader,
+  EmptyState,
+  ErrorBanner,
+  Panel,
+  PanelHeader,
+  PanelLabel,
+  Pill,
+  Skeleton,
+  TableSkeleton,
+  td,
+  th,
+  tr,
+} from '@/components/admin/admin-ui';
 
 interface AdminReferral {
   id: string;
@@ -27,52 +42,84 @@ interface ReferralSettings {
 export function AdminReferralsView() {
   const [data, setData] = useState<AdminReferralsResponse | null>(null);
   const [settings, setSettings] = useState<ReferralSettings | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-     
-    apiFetch<AdminReferralsResponse>('/api/admin/referrals').then(setData);
-     
-    apiFetch<ReferralSettings>('/api/admin/referrals/settings').then(setSettings);
+  const load = useCallback(async () => {
+    try {
+      const [d, s] = await Promise.all([
+        apiFetch<AdminReferralsResponse>('/api/admin/referrals'),
+        apiFetch<ReferralSettings>('/api/admin/referrals/settings'),
+      ]);
+      setData(d);
+      setSettings(s);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not load referrals.');
+    }
   }, []);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-mount pattern
+    load();
+  }, [load]);
+
+  const pending = data?.referrals.filter((r) => r.rewardStatus === 'PENDING').length ?? 0;
+  const stats = [
+    { label: 'Reward per referral', value: settings ? formatCents(settings.rewardCents) : null, hint: settings?.payout },
+    { label: 'Total paid out', value: data ? formatCents(data.totalRewardedCents) : null, hint: 'as account credit' },
+    { label: 'Referrals', value: data ? String(data.total) : null, hint: `${pending} waiting for a first purchase` },
+  ];
+
   return (
-    <div className="max-w-2xl">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4">
-          <div className="text-[10px] tracking-wide text-dark-500">REFERRAL PROGRAM</div>
-          <div className="mt-2 flex justify-between text-[12px] text-ink-900">
-            <span>Reward</span>
-            <span>{settings ? formatCents(settings.rewardCents) : '—'} flat credit</span>
-          </div>
-          <div className="mt-1 flex justify-between text-[12px] text-ink-900">
-            <span>Payout</span>
-            <span>{settings?.payout ?? '—'}</span>
-          </div>
-        </div>
-        <div className="bg-white p-4">
-          <div className="text-[10px] tracking-wide text-dark-500">TOTAL PAID OUT</div>
-          <div className="mt-2 text-[22px] font-light text-ink-900">
-            {data ? formatCents(data.totalRewardedCents) : '—'}
-          </div>
-        </div>
+    <div>
+      <AdminPageHeader title="Referral program" description="Clients earn credit when someone they refer makes their first purchase." />
+      {error && <ErrorBanner message={error} onRetry={load} className="mb-4" />}
+
+      <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {stats.map((s, i) => (
+          <Panel key={s.label} className="p-5" delay={i * 0.04}>
+            <PanelLabel>{s.label}</PanelLabel>
+            <div className="mt-2 text-[24px] font-light text-ink-900">{s.value ?? <Skeleton className="h-7 w-20" />}</div>
+            {s.hint && <div className="text-[11px] text-ink-500">{s.hint}</div>}
+          </Panel>
+        ))}
       </div>
 
-      <div className="mt-4 bg-white p-4">
-        <div className="text-[10px] tracking-wide text-dark-500">ALL REFERRALS ({data?.total ?? 0})</div>
-        <div className="mt-2 flex flex-col divide-y divide-warm-150">
-          {data?.referrals.map((r) => (
-            <div key={r.id} className="flex items-center justify-between py-2 text-[12px]">
-              <span className="text-ink-900">
-                {r.referrerEmail} → {r.referredEmail}
-              </span>
-              <span className={r.rewardStatus === 'REWARDED' ? 'text-ink-900' : 'text-dark-500'}>
-                {r.rewardStatus === 'REWARDED' ? `${formatCents(r.rewardCents)} paid` : 'pending'}
-              </span>
-            </div>
-          ))}
-          {data?.referrals.length === 0 && <p className="py-4 text-[12px] text-dark-500">No referrals yet.</p>}
-        </div>
-      </div>
+      <Panel delay={0.12}>
+        <PanelHeader title="All referrals" count={data?.total} />
+        {!data && !error ? (
+          <TableSkeleton rows={5} cols={4} />
+        ) : data?.referrals.length === 0 ? (
+          <EmptyState icon={<Gift size={18} />} title="No referrals yet" hint="Clients share their link from the dashboard's Referrals tab." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px]">
+              <thead>
+                <tr>
+                  <th className={th}>Referrer → referred</th>
+                  <th className={th}>Joined</th>
+                  <th className={th}>Reward</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.referrals.map((r) => (
+                  <tr key={r.id} className={tr}>
+                    <td className={td}>
+                      <span className="inline-flex items-center gap-2">
+                        {r.referrerEmail} <ArrowRight size={12} className="text-ink-500" /> {r.referredEmail}
+                      </span>
+                    </td>
+                    <td className={`${td} text-ink-700`}>{new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td className={td}>
+                      {r.rewardStatus === 'REWARDED' ? <Pill tone="green">{formatCents(r.rewardCents)} paid</Pill> : <Pill tone="amber">Pending</Pill>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Panel>
     </div>
   );
 }
